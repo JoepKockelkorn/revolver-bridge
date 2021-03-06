@@ -1,0 +1,151 @@
+{
+  "version": 1,
+  "cli": {
+    "defaultCollection": "@nrwl/angular",
+    "packageManager": "yarn"
+  },
+  "defaultProject": "revolver-bridge",
+  "schematics": {
+    "@nrwl/angular": {
+      "application": {
+        "linter": "eslint"
+      },
+      "library": {
+        "linter": "eslint"
+      },
+      "storybook-configuration": {
+        "linter": "eslint"
+      }
+    },
+    "@nrwl/angular:application": {
+      "style": "scss",
+      "linter": "eslint",
+      "unitTestRunner": "jest",
+      "e2eTestRunner": "cypress"
+    },
+    "@nrwl/angular:library": {
+      "style": "scss",
+      "linter": "eslint",
+      "unitTestRunner": "jest"
+    },
+    "@nrwl/angular:component": {
+      "style": "scss"
+    }
+  },
+  "projects": {
+    "revolver-bridge": {
+      "projectType": "application",
+      "root": "apps/revolver-bridge",
+      "sourceRoot": "apps/revolver-bridge/src",
+      "prefix": "revolver-bridge",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:browser",
+          "options": {
+            "outputPath": "dist/apps/revolver-bridge",
+            "index": "apps/revolver-bridge/src/index.html",
+            "main": "apps/revolver-bridge/src/main.ts",
+            "polyfills": "apps/revolver-bridge/src/polyfills.ts",
+            "tsConfig": "apps/revolver-bridge/tsconfig.app.json",
+            "aot": true,
+            "assets": [
+              "apps/revolver-bridge/src/favicon.ico",
+              "apps/revolver-bridge/src/assets"
+            ],
+            "styles": ["apps/revolver-bridge/src/styles.scss"],
+            "scripts": []
+          },
+          "configurations": {
+            "production": {
+              "fileReplacements": [
+                {
+                  "replace": "apps/revolver-bridge/src/environments/environment.ts",
+                  "with": "apps/revolver-bridge/src/environments/environment.prod.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "namedChunks": false,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb",
+                  "maximumError": "10kb"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "browserTarget": "revolver-bridge:build"
+          },
+          "configurations": {
+            "production": {
+              "browserTarget": "revolver-bridge:build:production"
+            }
+          }
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "browserTarget": "revolver-bridge:build"
+          }
+        },
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": [
+              "apps/revolver-bridge/src/**/*.ts",
+              "apps/revolver-bridge/src/**/*.html"
+            ]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "outputs": ["coverage/apps/revolver-bridge"],
+          "options": {
+            "jestConfig": "apps/revolver-bridge/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "revolver-bridge-e2e": {
+      "root": "apps/revolver-bridge-e2e",
+      "sourceRoot": "apps/revolver-bridge-e2e/src",
+      "projectType": "application",
+      "architect": {
+        "e2e": {
+          "builder": "@nrwl/cypress:cypress",
+          "options": {
+            "cypressConfig": "apps/revolver-bridge-e2e/cypress.json",
+            "tsConfig": "apps/revolver-bridge-e2e/tsconfig.e2e.json",
+            "devServerTarget": "revolver-bridge:serve"
+          },
+          "configurations": {
+            "production": {
+              "devServerTarget": "revolver-bridge:serve:production"
+            }
+          }
+        },
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["apps/revolver-bridge-e2e/**/*.{js,ts}"]
+          }
+        }
+      }
+    }
+  }
+}
