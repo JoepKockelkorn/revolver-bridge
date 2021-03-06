@@ -20,7 +20,10 @@
     },
     {
       "files": ["*.ts", "*.tsx"],
-      "extends": ["plugin:@nrwl/nx/typescript"],
+      "extends": [
+        "plugin:@nrwl/nx/typescript",
+        "plugin:ordered-imports/recommended"
+      ],
       "parserOptions": { "project": "./tsconfig.*?.json" },
       "rules": {}
     },
