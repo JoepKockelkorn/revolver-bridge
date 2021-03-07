@@ -187,6 +187,11 @@
           "builder": "@nrwl/workspace:run-commands",
           "options": {
             "command": "nx run revolver-bridge-api:build-node"
+          },
+          "configurations": {
+            "production": {
+              "command": "nx run revolver-bridge-api:build-node:production"
+            }
           }
         },
         "serve": {
