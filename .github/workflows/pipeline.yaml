@@ -7,74 +7,34 @@ on:
     branches: [main]
 
 jobs:
-  lint:
+  checks:
     if: ${{ !contains(github.event.head_commit.message, '[skip ci]') }}
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout git
+        uses: actions/checkout@v2
         with:
           fetch-depth: 0
-      - uses: actions/setup-node@v1
+      - name: Setup node
+        uses: actions/setup-node@v1
         with:
           node-version: '14.x'
-      - uses: bahmutov/npm-install@v1
-      - uses: MansaGroup/nrwl-nx-action@v2.1.0
+      - name: Install node_modules
+        uses: bahmutov/npm-install@v1
+      - name: Check files format
+        run: yarn format:check --base=origin/main
+      - name: Lint & test
+        uses: MansaGroup/nrwl-nx-action@v2.1.0
         with:
-          targets: lint
-
-  test:
-    if: ${{ !contains(github.event.head_commit.message, '[skip ci]') }}
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
-      - uses: actions/setup-node@v1
-        with:
-          node-version: '14.x'
-      - uses: bahmutov/npm-install@v1
-      - uses: MansaGroup/nrwl-nx-action@v2.1.0
-        with:
-          targets: test
-
-  build:
-    if: ${{ !contains(github.event.head_commit.message, '[skip ci]') }}
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
-      - uses: actions/setup-node@v1
-        with:
-          node-version: '14.x'
-      - uses: bahmutov/npm-install@v1
-      - uses: MansaGroup/nrwl-nx-action@v2.1.0
+          targets: lint,test
+      - name: Build
+        uses: MansaGroup/nrwl-nx-action@v2.1.0
         with:
           targets: build
           args: --prod
-      - if: ${{ github.event_name == 'push' }}
-        uses: actions/upload-artifact@v2
-        with:
-          name: build-output
-          path: dist
-
-  deploy:
-    if: ${{ github.event_name == 'push' && !contains(github.event.head_commit.message, '[skip ci]') }}
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
-      - uses: actions/setup-node@v1
-        with:
-          node-version: '14.x'
-      - uses: bahmutov/npm-install@v1
-      - uses: actions/download-artifact@v2
-        with:
-          name: build-output
-          path: dist
-      - uses: MansaGroup/nrwl-nx-action@v2.1.0
+      - name: Deploy
+        if: ${{ github.event_name == 'push' }} # TODO: also check on commit type, i.e. feat or fix
+        uses: MansaGroup/nrwl-nx-action@v2.1.0
         with:
           targets: deploy
         env:
