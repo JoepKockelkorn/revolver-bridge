@@ -2,7 +2,8 @@
   "version": 1,
   "cli": {
     "defaultCollection": "@nrwl/angular",
-    "packageManager": "yarn"
+    "packageManager": "yarn",
+    "analytics": false
   },
   "defaultProject": "revolver-bridge",
   "schematics": {
