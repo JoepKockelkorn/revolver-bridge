@@ -1,5 +1,14 @@
 {
   "projects": {
     "default": "revolver-bridge"
+  },
+  "targets": {
+    "revolver-bridge": {
+      "hosting": {
+        "revolver-bridge": [
+          "revolver-bridge"
+        ]
+      }
+    }
   }
 }
